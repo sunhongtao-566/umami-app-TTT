@@ -8,14 +8,14 @@
 </head>
 <body>
     <h1>Umami Prediction</h1>
-    <form method="POST">
+  <form action="/predict" method="POST">
         <label for="sequence">Enter Amino Acid Sequence:</label><br>
         <input type="text" id="sequence" name="sequence"><br><br>
         <input type="submit" value="Predict"><br><br>
     </form>
 
-    {% if result is not none %}
-    <h2>Prediction: {{ result }}</h2>
-    {% endif %}
+  {% if result is not none %}
+  <h2>Prediction: {{ result }}</h2>
+{% endif %}
 </body>
 </html>
