@@ -1,21 +1,179 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-zinc-50">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Umami Prediction</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Umami-QLU — Mechanism-informed Umami Peptide AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="High-precision umami peptide prediction with explainable design. Built for food scientists.">
 </head>
-<body>
-    <h1>Umami Prediction</h1>
-  <form action="/predict" method="POST">
-        <label for="sequence">Enter Amino Acid Sequence:</label><br>
-        <input type="text" id="sequence" name="sequence"><br><br>
-        <input type="submit" value="Predict"><br><br>
-    </form>
+<body class="h-full text-zinc-800">
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-30 border-b border-zinc-200/70 bg-white/80 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div class="flex items-center gap-3">
+        <div class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M11 2l1.546 4.638a2 2 0 001.216 1.216L18 9l-4.238 1.546a2 2 0 00-1.216 1.216L11 16l-1.546-4.238a2 2 0 00-1.216-1.216L4 9l4.238-1.146a2 2 0 001.216-1.216L11 2z"/></svg>
+        </div>
+        <div>
+          <p class="text-xs leading-tight text-zinc-500">Mechanism-informed Umami Peptide AI</p>
+          <h1 class="text-lg font-semibold tracking-tight">Umami-QLU</h1>
+        </div>
+      </div>
+      <nav class="hidden items-center gap-6 md:flex">
+        <a href="#features" class="text-sm text-zinc-600 hover:text-zinc-900">Features</a>
+        <a href="#demo" class="text-sm text-zinc-600 hover:text-zinc-900">Demo</a>
+        <a href="#results" class="text-sm text-zinc-600 hover:text-zinc-900">Results</a>
+        <a href="#resources" class="text-sm text-zinc-600 hover:text-zinc-900">Docs</a>
+      </nav>
+      <a href="#demo" class="inline-flex items-center gap-2 rounded-2xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white shadow-sm hover:-translate-y-0.5 transition">Try the Model</a>
+    </div>
+  </header>
 
-  {% if result is not none %}
-  <h2>Prediction: {{ result }}</h2>
-{% endif %}
+  <!-- HERO -->
+  <section class="relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 -z-10 opacity-60 [mask-image:radial-gradient(65%_50%_at_50%_0%,black,transparent)]">
+      <div class="absolute -top-24 left-1/4 h-[28rem] w-[28rem] rounded-full bg-emerald-300/40 blur-3xl"></div>
+      <div class="absolute top-20 right-1/4 h-[26rem] w-[26rem] rounded-full bg-cyan-300/40 blur-3xl"></div>
+    </div>
+    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-20">
+      <div>
+        <h2 class="text-4xl font-bold tracking-tight md:text-5xl">
+          High-precision <span class="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent">Umami</span> peptide prediction
+          <br/>with explainable design
+        </h2>
+        <p class="mt-4 text-zinc-600 md:text-lg">
+          Screen candidates in seconds, then justify them mechanistically via residue-level insights and docking/MD alignment. Built for food scientists.
+        </p>
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <a href="#demo" class="rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-medium text-white shadow hover:brightness-110">Quick Demo</a>
+          <a href="#results" class="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-zinc-900 ring-1 ring-zinc-200 hover:-translate-y-0.5">See Results</a>
+          <a href="#resources" class="rounded-2xl bg-white px-5 py-3 text-sm font-medium text-zinc-900 ring-1 ring-zinc-200 hover:-translate-y-0.5">Docs</a>
+        </div>
+        <div class="mt-6 flex flex-wrap gap-4 text-sm text-zinc-600">
+          <div class="flex items-center gap-2">ACC 93.01%</div>
+          <div class="flex items-center gap-2">MCC 0.8414</div>
+          <div class="flex items-center gap-2">Random Forest + multi-source features</div>
+        </div>
+      </div>
+
+      <!-- Demo card -->
+      <div id="demo" class="rounded-2xl border border-zinc-200/60 bg-white/80 backdrop-blur p-6 shadow-sm md:translate-y-2">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold">Try a sequence</h3>
+          <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">Live demo</span>
+        </div>
+        <p class="mt-2 text-sm text-zinc-600">Paste a peptide (2-25 aa). This form posts to <code>/predict</code> and renders the result below.</p>
+
+        <form class="mt-4 flex flex-col gap-3 md:flex-row" action="/predict" method="POST">
+          <input class="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm outline-none ring-emerald-500/40 placeholder:text-zinc-400 focus:ring"
+                 name="sequence" id="sequence" placeholder="e.g., EGYDD or EVGDD" maxlength="32" required>
+          <button class="rounded-2xl bg-zinc-900 px-5 py-3 text-sm font-medium text-white shadow-sm hover:opacity-95" type="submit">Predict</button>
+        </form>
+
+        {% if result is not none %}
+        <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div class="rounded-2xl border border-zinc-200/60 bg-white p-4 shadow-sm">
+            <p class="text-xs text-zinc-500">Prediction</p>
+            <p class="mt-1 text-2xl font-semibold tracking-tight">{{ result }}</p>
+          </div>
+          <div class="rounded-2xl border border-zinc-200/60 bg-white p-4 shadow-sm">
+            <p class="text-xs text-zinc-500">Confidence (proxy)</p>
+            <p class="mt-1 text-2xl font-semibold tracking-tight">—</p>
+          </div>
+          <div class="rounded-2xl border border-zinc-200/60 bg-white p-4 shadow-sm">
+            <p class="text-xs text-zinc-500">Design Hint</p>
+            <p class="mt-1 text-sm">Try acidic residues near N-terminus; test D/E swaps.</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="mx-auto max-w-6xl px-6 py-12 md:py-16">
+    <div class="mb-8 flex items-end justify-between">
+      <h3 class="text-2xl font-semibold">Why Umami-QLU</h3>
+      <p class="text-sm text-zinc-600">Mechanism-aware, lab-ready.</p>
+    </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <h4 class="font-medium">Multi-source features</h4>
+        <p class="mt-2 text-sm text-zinc-600">Physicochemical stats, position-weighted embeddings, tri-peptide frequencies, structure-aware signals — fused in a tuned Random Forest.</p>
+      </div>
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <h4 class="font-medium">Explainable by design</h4>
+        <p class="mt-2 text-sm text-zinc-600">Residue-level attributions and rules of thumb for sequence edits align with docking/MD patterns.</p>
+      </div>
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <h4 class="font-medium">Lab-friendly workflow</h4>
+        <p class="mt-2 text-sm text-zinc-600">In-silico ranking → short-list synthesis → ITC & sensory → MD validation. Built for rapid iteration.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="mx-auto max-w-6xl px-6 py-12 md:py-16">
+    <div class="mb-8 flex items-end justify-between">
+      <h3 class="text-2xl font-semibold">Model performance</h3>
+      <p class="text-sm text-zinc-600">Benchmark vs literature baselines</p>
+    </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <p class="text-sm text-zinc-500">Accuracy (ACC)</p>
+        <p class="mt-1 text-3xl font-semibold tracking-tight">93.01%</p>
+        <p class="mt-2 text-sm text-zinc-600">5-fold CV with SMOTE-Tomek balancing.</p>
+      </div>
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <p class="text-sm text-zinc-500">Matthews Corr. (MCC)</p>
+        <p class="mt-1 text-3xl font-semibold tracking-tight">0.8414</p>
+        <p class="mt-2 text-sm text-zinc-600">Robust under class imbalance.</p>
+      </div>
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <p class="text-sm text-zinc-500">Generalization</p>
+        <p class="mt-1 text-3xl font-semibold tracking-tight">Strong</p>
+        <p class="mt-2 text-sm text-zinc-600">External tests + ablations (position weights on/off).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section id="resources" class="mx-auto max-w-6xl px-6 pb-20">
+    <div class="mb-8 flex items-end justify-between">
+      <h3 class="text-2xl font-semibold">Resources</h3>
+      <p class="text-sm text-zinc-600">Reproduce & cite</p>
+    </div>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <h4 class="font-medium">Source Code</h4>
+        <a class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-emerald-600 hover:underline" href="#" target="_blank">Open repo →</a>
+      </div>
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <h4 class="font-medium">API Docs</h4>
+        <a class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-emerald-600 hover:underline" href="#" target="_blank">/predict endpoint →</a>
+      </div>
+      <div class="rounded-2xl border border-zinc-200/60 bg-white p-6 shadow-sm">
+        <h4 class="font-medium">Paper / Preprint</h4>
+        <a class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-emerald-600 hover:underline" href="#" target="_blank">Read now →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-zinc-200/70 bg-white/60">
+    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-6 md:flex-row">
+      <p class="text-sm text-zinc-600">© <span id="year"></span> Umami-QLU • Built for Food Science</p>
+      <div class="flex items-center gap-5 text-sm">
+        <a href="#" class="text-zinc-600 hover:text-zinc-900">License</a>
+        <a href="#" class="text-zinc-600 hover:text-zinc-900">Privacy</a>
+        <a href="#" class="text-zinc-600 hover:text-zinc-900">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
